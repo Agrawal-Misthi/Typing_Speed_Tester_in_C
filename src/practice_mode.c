@@ -90,3 +90,4 @@ void practice_mode() {
         while (getchar() != '\n'); // clear input buffer
 
     } while (repeat == 1);
+}
