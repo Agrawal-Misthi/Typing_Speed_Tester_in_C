@@ -50,3 +50,7 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# Ignore scoreboard or user-generated files
+practice_data.txt
+scoreboard.txt
