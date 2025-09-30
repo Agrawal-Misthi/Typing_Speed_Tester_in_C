@@ -1,0 +1,25 @@
+# Hard Mode: Challenging words (level 1-5)
+antidisestablishmentarianism
+floccinaucinihilipilification
+pneumonoultramicroscopicsilicovolcanoconiosis
+supercalifragilisticexpialidocious
+hippopotomonstrosesquipedaliophobia
+
+# Hard Mode: Complex phrases (level 6-10)
+"The quick brown fox jumps over the lazy dog."
+"She sells seashells by the seashore."
+"How vexingly quick daft zebras jump!"
+"Jackdaws love my big sphinx of quartz."
+"Pack my box with five dozen liquor jugs."
+
+# Hard Mode: Complex sentences and quotes (level 11-15)
+"To be, or not to be, that is the question."
+"All the world's a stage, and all the men and women merely players."
+"Though she be but little, she is fierce."
+"The fault, dear Brutus, is not in our stars, but in ourselves."
+"Et tu, Brute?"
+"Not all those who wander are lost."
+"The only thing we have to fear is fear itself."
+"Do not go gentle into that good night."
+"In the middle of difficulty lies opportunity."
+"Imagination will often carry us to worlds that never were."

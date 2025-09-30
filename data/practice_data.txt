@@ -1,0 +1,35 @@
+# Level 1–5: Single words
+algorithm
+catalyst
+neutron
+quark
+entropy
+molecule
+velocity
+fusion
+tornado
+voltage
+
+# Level 6–10: Short phrases
+ice melts at zero degrees
+sound travels faster in solids
+the moon orbits the earth
+plants absorb carbon dioxide
+bats use echolocation
+light refracts in water
+magnet attracts iron
+shadows move with the sun
+rainbows have seven colors
+gravity pulls objects down
+
+# Level 11–15: Sentences / quotes with punctuation
+"Education is the most powerful weapon which you can use to change the world." – Nelson Mandela
+"Do what you can, with what you have, where you are." – Theodore Roosevelt
+"In the end, we will remember not the words of our enemies, but the silence of our friends." – Martin Luther King Jr.
+"The best way to predict the future is to invent it." – Alan Kay
+"Not everything that is faced can be changed, but nothing can be changed until it is faced." – James Baldwin
+"Believe you can and you're halfway there." – Theodore Roosevelt
+"Start where you are. Use what you have. Do what you can." – Arthur Ashe
+"Success is not final, failure is not fatal: It is the courage to continue that counts." – Winston Churchill
+"Act as if what you do makes a difference. It does." – William James
+"The secret of getting ahead is getting started." – Mark Twain

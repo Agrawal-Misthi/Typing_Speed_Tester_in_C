@@ -1,0 +1,41 @@
+# Level 1-5: Single words (one per line)
+gravity
+oxygen
+photosynthesis
+evolution
+atom
+galaxy
+energy
+momentum
+velocity
+force
+
+# Level 6-10: Short phrases or statements
+water boils at 100 degrees
+light travels faster than sound
+the sun rises in east
+plants need sunlight
+birds migrate south
+honey never spoils
+pi is approximately 3.14
+humans have 206 bones
+sound requires medium
+ice floats on water
+
+# Level 11-15: Sentences / quotes with punctuation
+"The only limit to our realization of tomorrow is our doubts of today."
+– Franklin D. Roosevelt
+"Be yourself; everyone else is already taken."
+– Oscar Wilde
+"Imagination is more important than knowledge."
+– Albert Einstein
+"In the middle of every difficulty lies opportunity."
+– Albert Einstein
+"Life is what happens when you're busy making other plans."
+– John Lennon
+"The journey of a thousand miles begins with one step."
+– Lao Tzu
+"Success usually comes to those who are too busy to be looking for it."
+– Henry David Thoreau
+"Don't watch the clock; do what it does. Keep going."
+– Sam Levenson
