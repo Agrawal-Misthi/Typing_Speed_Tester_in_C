@@ -41,6 +41,7 @@ void normal_mode() {
 
     // Shuffle word list
     shuffle_lines(words, words_count);
+    //yo
 
     // Timer setup
     time_t start_time = time(NULL);

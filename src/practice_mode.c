@@ -11,6 +11,7 @@ void practice_mode() {
         char saved_lines[MAX_LINES][MAX_LEN];
         int lines_read;
         int choice;
+        //sos
 
         printf("\n--- Practice Mode ---\n");
         printf("1. Enter and save new practice text\n");
