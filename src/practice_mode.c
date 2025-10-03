@@ -32,6 +32,13 @@ void practice_mode() {
                 printf("⚠️ No practice data found. Please add text first.\n");
                 return;
             }
+            //Remove trailing newlines from each loaded line
+            for (int i = 0; i < lines_read; i++) {
+                size_t len = strlen(saved_lines[i]);
+                if (len > 0 && saved_lines[i][len - 1] == '\n') {
+                    saved_lines[i][len - 1] = '\0';
+                }
+            }
 
             printf("\n📖 Begin typing the following lines:\n");
 
@@ -39,37 +46,52 @@ void practice_mode() {
             int total_chars = 0;
 
             for (int i = 0; i < lines_read; i++) {
-                char input[MAX_LEN];
+                int len_expected=strlen(saved_lines[i]);
 
                 printf("\nLine %d: %s\n", i + 1, saved_lines[i]);
-                printf("Your input: ");
-                fgets(input, sizeof(input), stdin);
+                printf("Start Typing: ");
 
                 // Remove trailing newline
-                size_t len_input = strlen(input);
+                /*size_t len_input = strlen(input);
                 if (len_input > 0 && input[len_input - 1] == '\n') {
                     input[len_input - 1] = '\0';
                     len_input--;
-                }
+                }*/
 
-                size_t len_expected = strlen(saved_lines[i]);
-                size_t max_len = len_input > len_expected ? len_input : len_expected;
+                for(int j=0; j<len_expected; j++){
+                    char expected_char=saved_lines[i][j];
+                    char input_char;
+                    input_char=getchar();
 
-                int line_mistakes = 0;
-
-                for (size_t j = 0; j < max_len; j++) {
                     total_chars++;
-                    if (input[j] != saved_lines[i][j]) {
-                        line_mistakes++;
-                        total_mistakes++;
-                    }
-                }
 
-                if (line_mistakes == 0) {
-                    printf("✅ Correct!\n");
-                } else {
-                    printf("❌ Incorrect! Mistakes in this line: %d\n", line_mistakes);
-                    printf("   Expected: %s\n", saved_lines[i]);
+                    if(input_char==expected_char){
+                        putchar(input_char);
+                        //continue;
+                    } 
+                    else{
+                        total_mistakes++;
+                        printf("\n❌ Incorrect input. Expected '%c' but got '%c'. Please try again for this character.\n", expected_char, input_char);
+
+                        while(1){
+                            input_char=getchar();
+                            total_mistakes++; 
+                            if(input_char==expected_char){
+                                putchar(input_char);
+                                break; 
+                            } 
+                            else {
+                                printf("\n❌ Still incorrect. Expected '%c', got '%c'. Try again:\n", expected_char, input_char);
+                            }
+                        }
+                    }
+                    /*
+                     // Consume trailing newline user inputs after each line
+                      int c;
+                      while ((c = getchar()) != '\n' && c != EOF) {
+                      // Discard
+                      }
+                    */
                 }
             }
 
@@ -91,4 +113,4 @@ void practice_mode() {
         while (getchar() != '\n'); // clear input buffer
 
     } while (repeat == 1);
-}
+} 
