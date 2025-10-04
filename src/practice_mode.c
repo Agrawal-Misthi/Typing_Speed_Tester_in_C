@@ -1,9 +1,12 @@
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
 #include "file_handler.h"
+#include "scoreboard.h"
 
 #define MAX_LINES 100
 #define MAX_LEN 256
+#define PRACTICE_FILE "practice_data.txt"
 
 void practice_mode() {
     int repeat;
@@ -25,8 +28,9 @@ void practice_mode() {
             fgets(input_text, sizeof(input_text), stdin);
             save_practice_data(input_text);
             printf("✅ Practice data saved!\n");
+
         } else if (choice == 2) {
-            lines_read = load_data("practice_data.txt", saved_lines, MAX_LINES);
+            lines_read = load_data(PRACTICE_FILE, saved_lines, MAX_LINES);
             if (lines_read <= 0) {
                 printf("⚠️ No practice data found. Please add text first.\n");
                 return;
@@ -36,22 +40,24 @@ void practice_mode() {
 
             int total_mistakes = 0;
             int total_chars = 0;
+            int total_seconds = 0;
 
             for (int i = 0; i < lines_read; i++) {
                 char input[MAX_LEN];
-
                 printf("\nLine %d: %s\n", i + 1, saved_lines[i]);
                 printf("Your input: ");
+
+                time_t start_time, end_time;
+                time(&start_time);
                 fgets(input, sizeof(input), stdin);
+                time(&end_time);
+
+                total_seconds += (int)difftime(end_time, start_time);
 
                 // Remove trailing newline
-                size_t len_input = strlen(input);
-                if (len_input > 0 && input[len_input - 1] == '\n') {
-                    input[len_input - 1] = '\0';
-                    len_input--;
-                }
+                input[strcspn(input, "\n")] = '\0';
 
-                // Check mistakes
+                size_t len_input = strlen(input);
                 size_t len_expected = strlen(saved_lines[i]);
                 size_t max_len = len_input > len_expected ? len_input : len_expected;
 
@@ -71,32 +77,49 @@ void practice_mode() {
                     printf("   Expected: %s\n", saved_lines[i]);
                 }
 
-                // Ask user if they want to continue or quit
-                int cont_choice;
-                printf("\nDo you want to continue to the next line? (1 = Yes / 0 = Quit): ");
-                scanf("%d", &cont_choice);
+                // Ask if user wants to continue or quit
+                int continue_choice;
+                printf("\nDo you want to continue? (1 = Yes / 0 = Quit): ");
+                scanf("%d", &continue_choice);
                 while (getchar() != '\n'); // clear input buffer
-                if (cont_choice == 0) {
-                    printf("\n🏳️ You chose to quit the practice session.\n");
-                    break;
-                }
+                if (continue_choice == 0) break;
             }
 
-            // Show final stats
-            printf("\n🎯 Practice session complete.\n");
-            printf("📝 Total characters typed: %d\n", total_chars);
-            printf("❌ Total character mistakes made: %d\n", total_mistakes);
+            // Calculate accuracy
             float accuracy = 0.0f;
             if (total_chars > 0) {
                 accuracy = ((float)(total_chars - total_mistakes) / total_chars) * 100.0f;
             }
+
+            printf("\n🎯 Practice session complete.\n");
+            printf("📝 Total characters typed: %d\n", total_chars);
+            printf("❌ Total character mistakes made: %d\n", total_mistakes);
             printf("🎯 Accuracy: %.2f%%\n", accuracy);
+            printf("⏱ Total time: %d min %d sec\n", total_seconds / 60, total_seconds % 60);
+
+            // Save score to practice scoreboard
+            char username[50];
+            printf("\nEnter your name to save your score: ");
+            fgets(username, sizeof(username), stdin);
+            username[strcspn(username, "\n")] = '\0';
+
+            // 🕒 Generate current date
+            char date[20];
+            time_t now = time(NULL);
+            struct tm *tm_info = localtime(&now);
+            strftime(date, sizeof(date), "%d-%m-%Y", tm_info);
+    
+            // 💾 Save score with date
+            save_practice_score(username, accuracy, total_seconds, date);
+            // Display updated scoreboard
+            display_practice_scores();
+
         } else {
-            printf("Invalid choice. Try again.\n");
+            printf("⚠️ Invalid choice. Try again.\n");
         }
 
-        // Ask if user wants to start practice again from menu
-        printf("\nDo you want to practice again from the menu? (1 = Yes / 0 = No): ");
+        // Ask if user wants to retry practice
+        printf("\nDo you want to practice again? (1 = Yes / 0 = No): ");
         scanf("%d", &repeat);
         while (getchar() != '\n'); // clear input buffer
 
