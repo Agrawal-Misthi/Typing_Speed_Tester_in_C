@@ -1,16 +1,37 @@
-//header file to declares two functions which save and load text to/from files.
-
 #ifndef FILE_HANDLER_H
 #define FILE_HANDLER_H
 
-// Save practice text (overwrite fixed file)
-void save_practice_data(const char* text);
+#include <stdio.h>
+
+#if defined(_WIN32) || defined(_WIN64)
+    #include <conio.h>   // for _getch()
+#else
+    #include <termios.h>
+    #include <unistd.h>
+#endif
+
+// ------------------------- File Handling -------------------------
+
+// Get absolute path to a file inside the data folder
+void get_data_file_path(const char *filename, char *full_path, size_t size);
 
 // Load multiple lines from a file into a 2D array of strings
-// Returns number of lines read or -1 on error
+// Returns number of lines read or -1 on error; ignores lines starting with '#' or blank lines
 int load_data(const char* filename, char data[][256], int max_lines);
 
-// Append a score record to the scoreboard file
-void save_score(const char* username, int time_taken, int level, float wpm);
+// Save practice text (overwrite practice_data.txt)
+void save_practice_data(const char* text);
+
+// ------------------------- Score Handling -------------------------
+
+// Save scores for different modes
+void save_practice_score(const char* username, float accuracy, int time_sec, const char* date);
+void save_normal_score(const char* username, int level, float wpm, float accuracy, int time_sec, const char* date);
+void save_challenge_score(const char* username, int level, float wpm, int time_sec, const char* date);
+
+// ------------------------- Utility -------------------------
+
+// Cross-platform getch() for single-character input
+int getch(void);
 
 #endif // FILE_HANDLER_H
