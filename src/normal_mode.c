@@ -52,9 +52,13 @@ void normal_mode() {
         char *expected = words[level];
         size_t len = strlen(expected);
         char input[MAX_INPUT_LEN] = {0};
-
-        printf("\nLevel %d | Time left: %d sec | Lifelines left: %d\n",
-               level + 1, time_limit - (int)(time(NULL) - start_time), MAX_MISTAKES - mistakes);
+                  int h = time_limit / 3600;
+                 int m = (time_limit % 3600) / 60;
+                 int s = time_limit % 60;
+                 printf("\rTime Left: %02d:%02d:%02d ", h, m, s);
+                 printf("\nLevel %d | \rTime Left: %02d:%02d:%02d  | Lifelines left: %d\n",
+              level + 1, h, m, s, MAX_MISTAKES - mistakes);
+                 fflush(stdout);
         printf("Type this: %s\n", expected);
         printf("Start typing: ");
 
