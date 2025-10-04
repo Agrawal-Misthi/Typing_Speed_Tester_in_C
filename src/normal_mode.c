@@ -1,6 +1,7 @@
 #include <stdio.h>
+#include <stdlib.h> //for srand(), rand()
 #include <string.h>
-#include <time.h>
+#include <time.h> //for time()
 #include "file_handler.h"
 
 #define MAX_WORDS 1000

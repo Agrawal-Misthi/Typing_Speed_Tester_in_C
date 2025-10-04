@@ -63,7 +63,13 @@ void practice_mode() {
                     char input_char;
                     input_char=getchar();
 
-                    total_chars++;
+                // Check mistakes
+//                size_t len_expected = strlen(saved_lines[i]);
+ //               size_t max_len = len_input > len_expected ? len_input : len_expected;
+//
+ //               int line_mistakes = 0;
+  //              for (size_t j = 0; j < max_len; j++) {
+    //                total_chars++;
 
                     if(input_char==expected_char){
                         putchar(input_char);
@@ -93,8 +99,19 @@ void practice_mode() {
                       }
                     */
                 }
+
+                // Ask user if they want to continue or quit
+                int cont_choice;
+                printf("\nDo you want to continue to the next line? (1 = Yes / 0 = Quit): ");
+                scanf("%d", &cont_choice);
+                while (getchar() != '\n'); // clear input buffer
+                if (cont_choice == 0) {
+                    printf("\n🏳️ You chose to quit the practice session.\n");
+                    break;
+                }
             }
 
+            // Show final stats
             printf("\n🎯 Practice session complete.\n");
             printf("📝 Total characters typed: %d\n", total_chars);
             printf("❌ Total character mistakes made: %d\n", total_mistakes);
@@ -107,8 +124,8 @@ void practice_mode() {
             printf("Invalid choice. Try again.\n");
         }
 
-        // Ask if user wants to retry practice
-        printf("\nDo you want to practice again? (1 = Yes / 0 = No): ");
+        // Ask if user wants to start practice again from menu
+        printf("\nDo you want to practice again from the menu? (1 = Yes / 0 = No): ");
         scanf("%d", &repeat);
         while (getchar() != '\n'); // clear input buffer
 
