@@ -14,7 +14,8 @@
     #define PATH_SEP '/'
 #endif
 
-// Get absolute path to data file
+// ------------------------- File Handling -------------------------
+
 void get_data_file_path(const char *filename, char *full_path, size_t size) {
 #if defined(_WIN32) || defined(_WIN64)
     char exe_path[MAX_PATH];
@@ -30,9 +31,21 @@ void get_data_file_path(const char *filename, char *full_path, size_t size) {
         fprintf(stderr, "Buffer too small; need size %u\n", bufsize);
         exit(EXIT_FAILURE);
     }
-    char *last_sep = strrchr(exe_path, PATH_SEP);
+
+    // Resolve to absolute path
+    char resolved_path[1024];
+    realpath(exe_path, resolved_path);
+
+    // Trim the executable name
+    char *last_sep = strrchr(resolved_path, '/');
     if (last_sep) *last_sep = '\0';
-    snprintf(full_path, size, "%s/data/%s", exe_path, filename);
+
+    // If running from src/, move up one directory
+    if (strstr(resolved_path, "/src")) {
+        snprintf(full_path, size, "%s/../data/%s", resolved_path, filename);
+    } else {
+        snprintf(full_path, size, "%s/data/%s", resolved_path, filename);
+    }
 
 #else // Linux
     char exe_path[1024];
@@ -48,21 +61,7 @@ void get_data_file_path(const char *filename, char *full_path, size_t size) {
 #endif
 }
 
-// Save practice text (overwrite file)
-void save_practice_data(const char* text) {
-    char path[1024];
-    get_data_file_path("practice_data.txt", path, sizeof(path));
 
-    FILE *fp = fopen(path, "w");
-    if (!fp) {
-        perror("Error opening practice_data.txt for writing");
-        return;
-    }
-    fprintf(fp, "%s", text);
-    fclose(fp);
-}
-
-// Load data from file into 2D array
 int load_data(const char* filename, char data[][256], int max_lines) {
     char path[1024];
     get_data_file_path(filename, path, sizeof(path));
@@ -76,14 +75,10 @@ int load_data(const char* filename, char data[][256], int max_lines) {
     int count = 0;
     char line[256];
     while (count < max_lines && fgets(line, sizeof(line), fp)) {
-        // Remove trailing newline
-        line[strcspn(line, "\n")] = '\0';
-
-        // Skip comment lines (#) or blank lines
-        if (line[0] == '#' || line[0] == '\0') continue;
-
+        line[strcspn(line, "\n")] = '\0'; // remove newline
+        if (line[0] == '#' || line[0] == '\0') continue; // skip comments/blank
         strncpy(data[count], line, 256);
-        data[count][255] = '\0'; // ensure null-termination
+        data[count][255] = '\0';
         count++;
     }
 
@@ -91,41 +86,53 @@ int load_data(const char* filename, char data[][256], int max_lines) {
     return count;
 }
 
-//Saving Score for each mode
-void save_practice_score(const char* username, float accuracy, int time_sec, const char* date) {
+void save_practice_data(const char* text) {
     char path[1024];
-    get_data_file_path("practice_scores.txt", path, sizeof(path));
+    get_data_file_path("practice_data.txt", path, sizeof(path));
+
+    FILE *fp = fopen(path, "w");
+    if (!fp) {
+        perror("Error opening practice_data.txt for writing");
+        return;
+    }
+    fprintf(fp, "%s", text);
+    fclose(fp);
+}
+
+// ------------------------- Score Saving -------------------------
+
+void save_practice_score(const char* username, float accuracy, int total_seconds, const char* date) {
+    char path[1024];
+    get_data_file_path("practice_score.txt", path, sizeof(path));
 
     FILE *fp = fopen(path, "a");
     if (!fp) { perror("Error saving practice score"); return; }
-    fprintf(fp, "%-10s  %6.2f%%  %02d:%02d  %s\n",
-            username, accuracy, time_sec / 60, time_sec % 60, date);
+    fprintf(fp, "%-10s %.2f %d %s\n", username, accuracy, total_seconds, date);
     fclose(fp);
 }
 
-void save_normal_score(const char* username, int level, float wpm, float accuracy, int time_sec, const char* date) {
+void save_normal_score(const char* username, int level, float wpm, float accuracy, int total_seconds, const char* date) {
     char path[1024];
-    get_data_file_path("normal_scores.txt", path, sizeof(path));
+    get_data_file_path("normal_score.txt", path, sizeof(path));
 
     FILE *fp = fopen(path, "a");
     if (!fp) { perror("Error saving normal score"); return; }
-    fprintf(fp, "%-10s  %3d  %6.2f  %6.2f%%  %02d:%02d  %s\n",
-            username, level, wpm, accuracy, time_sec / 60, time_sec % 60, date);
+    fprintf(fp, "%-10s %3d %.2f %.2f %d %s\n", username, level, wpm, accuracy, total_seconds, date);
     fclose(fp);
 }
 
-void save_challenge_score(const char* username, int level, float wpm, int time_sec, const char* date) {
+void save_challenge_score(const char* username, int level, float wpm, int total_seconds, const char* date) {
     char path[1024];
-    get_data_file_path("challenge_scores.txt", path, sizeof(path));
+    get_data_file_path("challenge_score.txt", path, sizeof(path));
 
     FILE *fp = fopen(path, "a");
     if (!fp) { perror("Error saving challenge score"); return; }
-    fprintf(fp, "%-10s  %3d  %6.2f  %02d:%02d  %s\n",
-            username, level, wpm, time_sec / 60, time_sec % 60, date);
+    fprintf(fp, "%-10s %3d %.2f %d %s\n", username, level, wpm, total_seconds, date);
     fclose(fp);
 }
 
-// Cross-platform getch()
+// ------------------------- Utility -------------------------
+
 int getch(void) {
 #if defined(_WIN32) || defined(_WIN64)
     return _getch();

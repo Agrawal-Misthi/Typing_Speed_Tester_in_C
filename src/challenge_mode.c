@@ -21,7 +21,7 @@ void challenge_mode() {
     fgets(username, sizeof(username), stdin);
     username[strcspn(username, "\n")] = '\0';
 
-    words_count = load_data("data/normal_mode_words.txt", words, MAX_WORDS);
+    words_count = load_data("hard_data.txt", words, MAX_WORDS);
     if (words_count < 1) {
         printf("No challenge data found. Please check data file.\n");
         return;

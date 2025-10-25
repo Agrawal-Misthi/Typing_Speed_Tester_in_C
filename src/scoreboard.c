@@ -1,11 +1,11 @@
 #include <stdio.h>
-#include "scoreboard.h"
-#include <string.h>
-#include <time.h>
 #include <stdlib.h>
+#include <string.h>
+#include "scoreboard.h"
 
 #define MAX_SCORES 100
 
+// ---------------- Utility ----------------
 void get_current_date(char *buffer, size_t size) {
     time_t t = time(NULL);
     struct tm tm = *localtime(&t);
@@ -13,20 +13,6 @@ void get_current_date(char *buffer, size_t size) {
 }
 
 // ---------------- Practice Mode ----------------
-void save_practice_score(const char* username, float accuracy, int total_seconds) {
-    FILE *fp = fopen("data/practice_score.txt", "a");
-    if (!fp) {
-        printf("Error opening practice_score.txt for writing.\n");
-        return;
-    }
-
-    char date[20];
-    get_current_date(date, sizeof(date));
-
-    fprintf(fp, "%-10s %.2f %d %s\n", username, accuracy, total_seconds, date);
-    fclose(fp);
-}
-
 void display_practice_scores() {
     PracticeScore scores[MAX_SCORES];
     int count = 0;
@@ -48,8 +34,8 @@ void display_practice_scores() {
     fclose(fp);
 
     // Sort by accuracy descending
-    for (int i = 0; i < count-1; i++) {
-        for (int j = i+1; j < count; j++) {
+    for (int i = 0; i < count - 1; i++) {
+        for (int j = i + 1; j < count; j++) {
             if (scores[j].accuracy > scores[i].accuracy) {
                 PracticeScore temp = scores[i];
                 scores[i] = scores[j];
@@ -69,20 +55,6 @@ void display_practice_scores() {
 }
 
 // ---------------- Normal Mode ----------------
-void save_normal_score(const char* username, int level, float wpm, float accuracy, int total_seconds) {
-    FILE *fp = fopen("data/normal_score.txt", "a");
-    if (!fp) {
-        printf("Error opening normal_score.txt for writing.\n");
-        return;
-    }
-
-    char date[20];
-    get_current_date(date, sizeof(date));
-
-    fprintf(fp, "%-10s %3d %.2f %.2f %d %s\n", username, level, wpm, accuracy, total_seconds, date);
-    fclose(fp);
-}
-
 void display_normal_scores() {
     NormalScore scores[MAX_SCORES];
     int count = 0;
@@ -105,11 +77,11 @@ void display_normal_scores() {
     }
     fclose(fp);
 
-    // Sort by WPM descending
-    for (int i = 0; i < count-1; i++) {
-        for (int j = i+1; j < count; j++) {
+    // Sort by WPM descending (and then accuracy)
+    for (int i = 0; i < count - 1; i++) {
+        for (int j = i + 1; j < count; j++) {
             if (scores[j].wpm > scores[i].wpm ||
-               (scores[j].wpm == scores[i].wpm && scores[j].accuracy > scores[i].accuracy)){
+               (scores[j].wpm == scores[i].wpm && scores[j].accuracy > scores[i].accuracy)) {
                 NormalScore temp = scores[i];
                 scores[i] = scores[j];
                 scores[j] = temp;
@@ -129,20 +101,6 @@ void display_normal_scores() {
 }
 
 // ---------------- Challenge Mode ----------------
-void save_challenge_score(const char* username, int level, float wpm, int total_seconds) {
-    FILE *fp = fopen("data/challenge_score.txt", "a");
-    if (!fp) {
-        printf("Error opening challenge_score.txt for writing.\n");
-        return;
-    }
-
-    char date[20];
-    get_current_date(date, sizeof(date));
-
-    fprintf(fp, "%-10s %3d %.2f %d %s\n", username, level, wpm, total_seconds, date);
-    fclose(fp);
-}
-
 void display_challenge_scores() {
     ChallengeScore scores[MAX_SCORES];
     int count = 0;
@@ -164,11 +122,11 @@ void display_challenge_scores() {
     }
     fclose(fp);
 
-    // Sort by WPM descending
-    for (int i = 0; i < count-1; i++) {
-        for (int j = i+1; j < count; j++) {
+    // Sort by WPM descending, then fastest time
+    for (int i = 0; i < count - 1; i++) {
+        for (int j = i + 1; j < count; j++) {
             if (scores[j].wpm > scores[i].wpm ||
-               (scores[j].wpm == scores[i].wpm && scores[j].total_seconds < scores[i].total_seconds)){
+               (scores[j].wpm == scores[i].wpm && scores[j].total_seconds < scores[i].total_seconds)) {
                 ChallengeScore temp = scores[i];
                 scores[i] = scores[j];
                 scores[j] = temp;

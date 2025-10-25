@@ -6,11 +6,11 @@ supercalifragilisticexpialidocious
 hippopotomonstrosesquipedaliophobia
 
 # Hard Mode: Complex phrases (level 6-10)
-"The quick brown fox jumps over the lazy dog."
-"She sells seashells by the seashore."
-"How vexingly quick daft zebras jump!"
-"Jackdaws love my big sphinx of quartz."
-"Pack my box with five dozen liquor jugs."
+The quick brown fox jumps over the lazy dog.
+She sells seashells by the seashore.
+How vexingly quick daft zebras jump!
+Jackdaws love my big sphinx of quartz.
+Pack my box with five dozen liquor jugs.
 
 # Hard Mode: Complex sentences and quotes (level 11-15)
 "To be, or not to be, that is the question."

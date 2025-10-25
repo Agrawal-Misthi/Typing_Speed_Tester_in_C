@@ -22,12 +22,12 @@ int load_data(const char* filename, char data[][256], int max_lines);
 // Save practice text (overwrite practice_data.txt)
 void save_practice_data(const char* text);
 
-// ------------------------- Score Handling -------------------------
+// ------------------------- Score Saving -------------------------
 
-// Save scores for different modes
-void save_practice_score(const char* username, float accuracy, int time_sec, const char* date);
-void save_normal_score(const char* username, int level, float wpm, float accuracy, int time_sec, const char* date);
-void save_challenge_score(const char* username, int level, float wpm, int time_sec, const char* date);
+// Save scores for different modes (date provided by caller)
+void save_practice_score(const char* username, float accuracy, int total_seconds, const char* date);
+void save_normal_score(const char* username, int level, float wpm, float accuracy, int total_seconds, const char* date);
+void save_challenge_score(const char* username, int level, float wpm, int total_seconds, const char* date);
 
 // ------------------------- Utility -------------------------
 

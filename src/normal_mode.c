@@ -11,16 +11,52 @@
 #define EXTRA_TIME 10  // seconds added per correct word/phrase
 
 // Fisher–Yates (Knuth) Shuffle
+// Safe Fisher–Yates shuffle with bounds checks + debug
 void shuffle_lines(char arr[][MAX_INPUT_LEN], int n) {
-    srand(time(NULL));
+    if (n <= 1) return;
+
+    srand((unsigned int)time(NULL));
+
     for (int i = n - 1; i > 0; i--) {
         int j = rand() % (i + 1);
-        char temp[MAX_INPUT_LEN];
-        strcpy(temp, arr[i]);
-        strcpy(arr[i], arr[j]);
-        strcpy(arr[j], temp);
+
+        // Basic sanity checks
+        if (i < 0 || i >= n || j < 0 || j >= n) {
+            fprintf(stderr, "shuffle_lines: index out of range i=%d j=%d n=%d\n", i, j, n);
+            return;
+        }
+
+        size_t len_i = strnlen(arr[i], MAX_INPUT_LEN);
+        size_t len_j = strnlen(arr[j], MAX_INPUT_LEN);
+
+        // If either string exactly fills the buffer without a NUL, that's suspicious
+        if (len_i >= (size_t)MAX_INPUT_LEN - 1 || len_j >= (size_t)MAX_INPUT_LEN - 1) {
+            fprintf(stderr, "shuffle_lines: suspicious long line (i=%d len=%zu, j=%d len=%zu). Aborting shuffle.\n",
+                    i, len_i, j, len_j);
+            return;
+        }
+
+        // Temporary buffer on heap (avoid big stack usage)
+        char *temp = malloc(MAX_INPUT_LEN);
+        if (!temp) {
+            perror("shuffle_lines: malloc");
+            return;
+        }
+
+        // Safe copies with explicit NUL termination
+        memcpy(temp, arr[i], len_i + 1);          // include NUL
+        memset(arr[i] + len_j, 0, 1);             // ensure arr[i] has NUL at correct place (just defensive)
+        memmove(arr[i], arr[j], len_j + 1);
+        memmove(arr[j], temp, len_i + 1);
+
+        // Ensure both are NUL-terminated (extra safety)
+        arr[i][MAX_INPUT_LEN - 1] = '\0';
+        arr[j][MAX_INPUT_LEN - 1] = '\0';
+
+        free(temp);
     }
 }
+
 
 void normal_mode() {
     char username[50];
@@ -37,8 +73,8 @@ void normal_mode() {
     username[strcspn(username, "\n")] = '\0';
 
     // Load words/phrases/sentences
-    words_count = load_data("data/normal_mode_words.txt", words, MAX_WORDS);
-    if (words_count < 1) {
+    words_count = load_data("default_data.txt", words, MAX_WORDS);
+    if (words_count <= 0) {
         printf("No words loaded for normal mode. Please check data file.\n");
         return;
     }
@@ -49,6 +85,11 @@ void normal_mode() {
     int time_limit = 60;  // base time in seconds
 
     while (mistakes < MAX_MISTAKES && level < words_count) {
+        if (level >= words_count || words[level][0] == '\0') {
+            printf("⚠️ Invalid level %d or empty line\n", level);
+            break;
+        }
+
         char *expected = words[level];
         size_t len = strlen(expected);
         char input[MAX_INPUT_LEN] = {0};
