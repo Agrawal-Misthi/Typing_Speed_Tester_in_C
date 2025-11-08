@@ -10,6 +10,11 @@
     #include <unistd.h>
 #endif
 
+// 👇👇👇 ADD THESE TWO LINES
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // ------------------------- File Handling -------------------------
 
 // Get absolute path to a file inside the data folder
@@ -33,5 +38,10 @@ void save_challenge_score(const char* username, int level, float wpm, int total_
 
 // Cross-platform getch() for single-character input
 int getch(void);
+
+// 👇👇👇 AND THESE TWO LINES AT THE END
+#ifdef __cplusplus
+}
+#endif
 
 #endif // FILE_HANDLER_H

@@ -30,9 +30,17 @@ typedef struct {
     int total_seconds;
     char date[20];
 } ChallengeScore;
+#ifdef __cplusplus              // 🟢 ADD — begin C++ protection
+extern "C" {
+#endif
+
 
 void display_practice_scores();
 void display_normal_scores();
 void display_challenge_scores();
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -1,15 +1,20 @@
 CC = gcc
-CFLAGS = -Iinclude -Wall -Wextra -std=c11   # Added some common warnings and set C standard
+CXX = g++
+CFLAGS = -Iinclude -Wall -Wextra -std=c11
+CXXFLAGS = -Iinclude -Wall -Wextra -std=c++17
 
-SRC = src/main.c src/file_handler.c src/practice_mode.c src/normal_mode.c src/challenge_mode.c src/scoreboard.c
-OBJ = $(SRC:.c=.o)
+SRC_C = src/main.c src/file_handler.c src/normal_mode.c src/challenge_mode.c src/scoreboard.c
+SRC_CPP = src/practice_mode.cpp
+OBJ = $(SRC_C:.c=.o) $(SRC_CPP:.cpp=.o)
 
 typing-speed-tester: $(OBJ)
-	$(CC) $(CFLAGS) -o $@ $^
+	$(CXX) $(OBJ) -o $@   # use g++ to link C + C++ together
 
-# Compile each .c file to .o
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
+
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
 	rm -f src/*.o typing-speed-tester
