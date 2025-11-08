@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Practice Mode</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f6fa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .box {
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      width: 400px;
+    }
+    textarea {
+      width: 100%;
+      height: 100px;
+      margin-top: 10px;
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+    button {
+      margin-top: 10px;
+      padding: 8px 16px;
+      background: #0078ff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #005fcc;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>Practice Mode</h2>
+
+    <!-- Option 1: Enter new text -->
+    <form action="/cgi-bin/web_interface.cgi" method="POST">
+      <input type="hidden" name="mode" value="save_practice">
+      <label>Enter new practice text:</label><br>
+      <textarea name="practice_text" placeholder="Type your paragraph here..."></textarea><br>
+      <button type="submit">Save Practice Text</button>
+    </form>
+
+    <hr>
+
+    <!-- Option 2: Start practice -->
+    <form action="/cgi-bin/web_interface.cgi" method="POST">
+      <input type="hidden" name="mode" value="start_practice">
+      <button type="submit">Start Practice</button>
+    </form>
+
+    <br>
+    <a href="/index.html">← Back to Home</a>
+  </div>
+</body>
+</html>

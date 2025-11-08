@@ -37,7 +37,7 @@ void shuffle_lines(char arr[][MAX_INPUT_LEN], int n) {
         }
 
         // Temporary buffer on heap (avoid big stack usage)
-        char *temp = malloc(MAX_INPUT_LEN);
+        char *temp = (char *)malloc(MAX_INPUT_LEN);
         if (!temp) {
             perror("shuffle_lines: malloc");
             return;
