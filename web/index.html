@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Typing Speed Tester</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+      body {
+    background-color: #f5f6fa;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+input[type="text"] {
+    padding: 8px;
+    width: 60%;
+    margin-top: 1rem;
+}
+
+input[type="submit"] {
+    padding: 8px 16px;
+    background-color: #0078ff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    margin-left: 10px;
+    cursor: pointer;
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to Typing Speed Tester</h1>
+        <p>Enter your name to start the test:</p>
+
+        <form action="/cgi-bin/web_interface.cgi" method="GET">
+            <input type="text" name="username" placeholder="Your name" required>
+            <input type="submit" value="Start Practice">
+        </form>
+    </div>
+</body>
+</html>

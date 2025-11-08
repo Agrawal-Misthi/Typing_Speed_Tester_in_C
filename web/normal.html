@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Normal Mode</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f6fa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .box {
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      width: 400px;
+    }
+    button {
+      margin-top: 10px;
+      padding: 8px 16px;
+      background: #0078ff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    button:hover {
+      background: #005fcc;
+    }
+    a {
+      display: inline-block;
+      margin-top: 10px;
+      text-decoration: none;
+      color: #0078ff;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>Normal Mode</h2>
+    <p>Start your normal typing test below:</p>
+
+    <!-- Start Normal Mode -->
+    <form action="/cgi-bin/web_interface.cgi" method="POST">
+      <input type="hidden" name="mode" value="start_normal">
+      <button type="submit">Start Typing Test</button>
+    </form>
+
+    <br>
+    <a href="/index.html">← Back to Home</a>
+  </div>
+</body>
+</html>

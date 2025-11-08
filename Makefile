@@ -1,15 +1,36 @@
 CC = gcc
-CFLAGS = -Iinclude -Wall -Wextra -std=c11   # Added some common warnings and set C standard
+CXX = g++
+CFLAGS = -Iinclude -Wall -Wextra -std=c11
+CXXFLAGS = -Iinclude -Wall -Wextra -std=c++17
 
-SRC = src/main.c src/file_handler.c src/practice_mode.c src/normal_mode.c src/challenge_mode.c src/scoreboard.c
-OBJ = $(SRC:.c=.o)
+SRC_C = src/main.c src/file_handler.c src/normal_mode.c src/challenge_mode.c src/scoreboard.c
+SRC_CPP = src/practice_mode.cpp
+OBJ = $(SRC_C:.c=.o) $(SRC_CPP:.cpp=.o)
 
+# ===== Normal desktop build =====
 typing-speed-tester: $(OBJ)
-	$(CC) $(CFLAGS) -o $@ $^
+	$(CXX) $(OBJ) -o $@   # use g++ to link C + C++ together
 
-# Compile each .c file to .o
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
 clean:
-	rm -f src/*.o typing-speed-tester
+	rm -f src/*.o typing-speed-tester web/cgi-bin/web_interface.cgi
+
+
+# ===== New: Build CGI Web Interface =====
+WEB_SRC = web/cgi-bin/web_interface.c \
+          src/file_handler.c \
+          src/practice_mode.cpp \
+          src/normal_mode.c \
+          src/challenge_mode.c \
+          src/scoreboard.c
+
+WEB_OUTPUT = web/cgi-bin/web_interface.cgi
+
+cgi:
+	$(CXX) $(CXXFLAGS) -o $(WEB_OUTPUT) $(WEB_SRC)
+	chmod +x $(WEB_OUTPUT)
