@@ -80,6 +80,7 @@ void normal_mode() {
     }
 
     shuffle_lines(words, words_count);
+    //yo
 
     time_t start_time = time(NULL);
     int time_limit = 60;  // base time in seconds
