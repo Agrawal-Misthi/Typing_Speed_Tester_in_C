@@ -5,9 +5,9 @@
 extern "C" {
 #endif
 
-void practice_mode(void);
-void normal_mode(void);
-void challenge_mode(void);
+void practice_mode(void);   // C++ function
+void normal_mode(void);     // C function
+void challenge_mode(void);  // C function
 
 #ifdef __cplusplus
 }

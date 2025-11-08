@@ -3,6 +3,7 @@
 #include <string.h>
 #include <time.h>
 #include <ctype.h>
+#include "modes.h"
 #include "file_handler.h"
 #include "scoreboard.h"
 
