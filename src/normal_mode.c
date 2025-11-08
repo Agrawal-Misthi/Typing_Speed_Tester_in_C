@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include "modes.h"
 #include "scoreboard.h"
 #include "file_handler.h"
 

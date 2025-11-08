@@ -1,63 +1,229 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Normal Mode</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f5f6fa;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
-    .box {
-      background: white;
-      padding: 2rem;
-      border-radius: 10px;
-      text-align: center;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      width: 400px;
-    }
-    button {
-      margin-top: 10px;
-      padding: 8px 16px;
-      background: #0078ff;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 1rem;
-    }
-    button:hover {
-      background: #005fcc;
-    }
-    a {
-      display: inline-block;
-      margin-top: 10px;
-      text-decoration: none;
-      color: #0078ff;
-    }
-    a:hover {
-      text-decoration: underline;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>Normal Mode</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #f5f6fa;
+    margin: 0;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .top-bar {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem 2rem;
+    position: absolute;
+    top: 0;
+    font-weight: bold;
+    box-sizing: border-box;
+    font-size: 1rem;
+  }
+  .top-bar div {
+    max-width: 40%;
+    overflow-wrap: break-word;
+    text-align: left;
+  }
+
+  .heading {
+    text-align: center;
+    margin-top: 3rem;
+    font-size: 2.2rem;
+    font-weight: bold;
+    color: #0078ff;
+  }
+
+  .level {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #555;
+    margin-top: 0.3rem;
+  }
+
+  .typing-box {
+    width: 600px;
+    min-height: 150px;
+    max-height: 250px;
+    background: white;
+    margin: 6rem auto 0 auto;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    font-weight: 500;
+    padding: 1rem;
+    text-align: center;
+    user-select: none;
+    word-wrap: break-word;
+  }
+
+  #hiddenInput {
+    position: absolute;
+    opacity: 0;
+  }
+
+  .back-link {
+    position: absolute;
+    bottom: 1.5rem;
+    left: 2rem;
+    text-decoration: none;
+    color: #0078ff;
+    font-weight: bold;
+  }
+  .back-link:hover {
+    text-decoration: underline;
+  }
+
+  .correct { color: green; }
+  .wrong { color: red; }
+</style>
 </head>
 <body>
-  <div class="box">
-    <h2>Normal Mode</h2>
-    <p>Start your normal typing test below:</p>
 
-    <!-- Start Normal Mode -->
-    <form action="/cgi-bin/web_interface.cgi" method="POST">
-      <input type="hidden" name="mode" value="start_normal">
-      <button type="submit">Start Typing Test</button>
-    </form>
+<div class="top-bar">
+  <div id="time">Time Left: 60 sec</div>
+  <div id="lifelines">Lifelines: 5</div>
+</div>
 
-    <br>
-    <a href="/index.html">← Back to Home</a>
-  </div>
+<div class="heading">Normal Mode</div>
+<div class="level" id="level">Level: 1</div>
+
+<div class="typing-box" id="typing-text">Loading...</div>
+<input type="text" id="hiddenInput" autofocus>
+
+<a class="back-link" href="/index.html">← Back to Home</a>
+
+<script>
+const typingBox = document.getElementById('typing-text');
+const hiddenInput = document.getElementById('hiddenInput');
+const timeSpan = document.getElementById('time');
+const lifelinesSpan = document.getElementById('lifelines');
+const levelSpan = document.getElementById('level');
+
+let words = [];
+let level = 0;
+let lifelines = 5;
+let timeLeft = 60;
+let totalCharsTyped = 0;
+let correctChars = 0;
+
+// Fetch words from CGI
+async function fetchWords() {
+  try {
+    const response = await fetch('/cgi-bin/web_interface.cgi?action=get_words');
+    if(!response.ok) throw new Error('Network error');
+    const data = await response.json();
+    words = data.words;
+    timeLeft = data.time_limit;
+    lifelines = data.max_mistakes;
+    typingBox.innerHTML = words[level].replace(/ /g, '&nbsp;');
+    lifelinesSpan.textContent = `Lifelines: ${lifelines}`;
+    timeSpan.textContent = `Time Left: ${timeLeft} sec`;
+  } catch(err) {
+    console.error('Error fetching words:', err);
+    typingBox.textContent = "Failed to load words!";
+  }
+}
+
+// Fetch words on page load
+fetchWords();
+
+// Timer
+const timer = setInterval(() => {
+  if(timeLeft <= 0) {
+    clearInterval(timer);
+    alert('⏰ Time’s up! Game Over.');
+    hiddenInput.disabled = true;
+    sendScore();
+    return;
+  }
+  timeLeft--;
+  timeSpan.textContent = `Time Left: ${timeLeft} sec`;
+}, 1000);
+
+// Typing input handler
+hiddenInput.addEventListener('input', () => {
+  if(words.length === 0) return;
+  const expected = words[level];
+  const value = hiddenInput.value;
+  let displayHTML = '';
+  let mistake = false;
+
+  for(let i=0; i<expected.length; i++) {
+    const char = expected[i] === ' ' ? '&nbsp;' : expected[i];
+    if(value[i] === expected[i]) {
+      displayHTML += `<span class="correct">${char}</span>`;
+    } else if(value[i] !== undefined) {
+      displayHTML += `<span class="wrong">${char}</span>`;
+      mistake = true;
+    } else {
+      displayHTML += char;
+    }
+  }
+
+  typingBox.innerHTML = displayHTML;
+
+  // Handle mistake
+  if(mistake && value.length > totalCharsTyped) {
+    lifelines--;
+    lifelinesSpan.textContent = `Lifelines: ${lifelines}`;
+    totalCharsTyped = value.length;
+    if(lifelines <= 0) {
+      alert('❌ No lifelines left! Game Over.');
+      hiddenInput.disabled = true;
+      clearInterval(timer);
+      sendScore();
+    }
+  }
+
+  // Word complete
+  if(value === expected) {
+    level++;
+    correctChars += expected.length;
+    totalCharsTyped += expected.length;
+    if(level >= words.length) {
+      alert('🎉 You completed all levels!');
+      hiddenInput.disabled = true;
+      clearInterval(timer);
+      sendScore();
+      return;
+    }
+    levelSpan.textContent = `Level: ${level+1}`;
+    hiddenInput.value = '';
+    typingBox.innerHTML = words[level].replace(/ /g, '&nbsp;');
+  }
+});
+
+// Send final score/WPM to CGI
+async function sendScore() {
+  const totalTime = 60 - timeLeft;
+  const wpm = ((correctChars/5) / (totalTime/60)).toFixed(2);
+  const accuracy = totalCharsTyped ? ((correctChars/totalCharsTyped)*100).toFixed(2) : 0;
+
+  try {
+    await fetch('/cgi-bin/web_interface.cgi?action=submit_score', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        username: 'Player',
+        level: level,
+        wpm: wpm,
+        accuracy: accuracy,
+        time_taken: totalTime
+      })
+    });
+    console.log('Score submitted successfully!');
+  } catch(err) {
+    console.error('Error submitting score:', err);
+  }
+}
+</script>
+
 </body>
 </html>
